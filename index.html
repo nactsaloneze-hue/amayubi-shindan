@@ -3,313 +3,463 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>あまゆび式・隠れ疲労診断</title>
-
+<title>指圧サロン あまゆび｜からだ診断</title>
 <style>
-body{
-margin:0;
-font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
-background:#f5efe3;
-color:#4b3621;
-}
+  :root {
+    --beige: #F5F5DC;
+    --matcha: #8B9467;
+    --matcha-light: #a3ae7d;
+    --brown: #6F4E37;
+    --brown-light: #8a6347;
+    --white: #fff;
+    --shadow: rgba(111,78,55,0.15);
+  }
 
-.container{
-max-width:600px;
-margin:auto;
-padding:20px;
-}
+  /* 全角ハイフンを修正、セレクタを * に修正 */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.card{
-background:#fffaf1;
-border-radius:20px;
-padding:20px;
-box-shadow:0 10px 20px rgba(0,0,0,0.1);
-margin-bottom:20px;
-text-align:center;
-}
+  body {
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', Georgia, serif;
+    background: var(--beige);
+    color: var(--brown);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-img{
-width:100%;
-max-width:400px;
-border-radius:20px;
-display:block;
-margin:auto;
-}
+  header {
+    width: 100%;
+    background: var(--brown);
+    color: var(--beige);
+    text-align: center;
+    padding: 18px 16px 14px;
+    letter-spacing: 0.2em;
+  }
+  header h1 { font-size: 1.2rem; font-weight: normal; }
+  header p  { font-size: 0.75rem; margin-top: 4px; opacity: 0.8; letter-spacing: 0.15em; }
 
-#resultImg{
-width:100%;
-max-width:400px;
-aspect-ratio:1/1;
-object-fit:cover;
-display:block;
-margin:20px auto;
-border-radius:20px;
-box-shadow:0 10px 25px rgba(0,0,0,0.15);
-}
+  main {
+    width: 100%;
+    max-width: 480px;
+    padding: 28px 20px 40px;
+    flex: 1;
+  }
 
-button{
-background:#6f7f45;
-color:white;
-border:none;
-padding:15px;
-border-radius:30px;
-width:100%;
-font-size:16px;
-margin-top:10px;
-cursor:pointer;
-}
+  /* ─── START SCREEN ─── */
+  #screen-start { text-align: center; }
+  .intro-title {
+    font-size: 1.35rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 10px;
+    color: var(--brown);
+  }
+  .intro-sub {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: #7a6050;
+    margin-bottom: 28px;
+  }
+  .intro-deco {
+    width: 60px; height: 2px;
+    background: var(--matcha);
+    margin: 0 auto 26px;
+  }
 
-button:active{
-transform:scale(0.98);
-}
+  /* ─── QUESTION SCREEN ─── */
+  #screen-question { display: none; }
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 5px;
+    background: #ddd8c8;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--matcha);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    font-size: 0.75rem;
+    color: #9a8070;
+    white-space: nowrap;
+  }
+  .q-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 30px 22px 26px;
+    box-shadow: 0 4px 18px var(--shadow);
+    text-align: center;
+  }
+  .q-num {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--matcha);
+    margin-bottom: 14px;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--brown);
+    margin-bottom: 28px;
+    min-height: 60px;
+  }
+  .q-hint {
+    font-size: 0.72rem;
+    color: #b0a090;
+    margin-bottom: 20px;
+  }
 
-.hidden{
-display:none;
-}
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-family: inherit;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: background 0.25s, box-shadow 0.25s, transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { transform: scale(0.97); }
 
-.question{
-text-align:left;
-margin-bottom:20px;
-}
+  .btn-primary {
+    background: var(--brown);
+    color: var(--beige);
+    margin-top: 8px;
+  }
+  .btn-primary:hover, .btn-primary:focus {
+    background: var(--brown-light);
+    box-shadow: 0 0 18px rgba(111,78,55,0.45), 0 0 6px rgba(111,78,55,0.3);
+  }
 
-.choice{
-display:flex;
-gap:10px;
-margin-top:16px;
-}
+  .btn-yes {
+    background: var(--matcha);
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .btn-yes:hover, .btn-yes:focus {
+    background: var(--matcha-light);
+    box-shadow: 0 0 18px rgba(139,148,103,0.55), 0 0 6px rgba(139,148,103,0.3);
+  }
 
-.choice button{
-width:50%;
-margin-top:0;
-}
+  .btn-no {
+    background: var(--white);
+    color: var(--brown);
+    border: 2px solid var(--brown);
+  }
+  .btn-no:hover, .btn-no:focus {
+    background: #faf7f2;
+    box-shadow: 0 0 14px rgba(111,78,55,0.25);
+  }
 
-.footer{
-text-align:center;
-font-size:12px;
-margin-top:30px;
-line-height:1.7;
-}
+  .btn-line {
+    background: #06C755;
+    color: var(--white);
+    font-size: 1.1rem;
+    margin-top: 6px;
+    border-radius: 50px;
+  }
+  .btn-line:hover, .btn-line:focus {
+    background: #08e060;
+    box-shadow: 0 0 20px rgba(6,199,85,0.5), 0 0 8px rgba(6,199,85,0.3);
+  }
 
-#error{
-color:#b94a48;
-font-weight:bold;
-margin-top:12px;
-}
+  .btn-retry {
+    background: transparent;
+    color: var(--brown);
+    border: 1.5px solid var(--brown);
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+  .btn-retry:hover {
+    background: #f0ece4;
+    box-shadow: 0 0 10px rgba(111,78,55,0.2);
+  }
 
-a{
-text-decoration:none;
-}
+  /* ─── RESULT SCREEN ─── */
+  #screen-result { display: none; text-align: center; }
 
-#resultText{
-line-height:1.8;
-}
+  .result-img-wrap {
+    width: min(260px, 80vw);
+    aspect-ratio: 1/1;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px var(--shadow);
+    background: #e8e4d8;
+  }
+  .result-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
-#advice{
-line-height:1.8;
-text-align:left;
-background:#f7f1e7;
-padding:16px;
-border-radius:16px;
-margin-top:16px;
-}
+  .result-badge {
+    display: inline-block;
+    background: var(--matcha);
+    color: var(--white);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .result-title {
+    font-size: 1.3rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    color: var(--brown);
+  }
+
+  .result-advice {
+    font-size: 0.88rem;
+    line-height: 1.85;
+    color: #7a6050;
+    background: var(--white);
+    border-left: 3px solid var(--matcha);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+    margin: 16px 0 22px;
+    text-align: left;
+  }
+
+  .line-note {
+    font-size: 0.72rem;
+    color: #9a8070;
+    margin-top: 8px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    display: none;
+    width: 100%;
+    background: var(--brown);
+    color: var(--beige);
+    text-align: center;
+    font-size: 0.72rem;
+    padding: 14px 16px;
+    line-height: 1.8;
+    letter-spacing: 0.08em;
+    opacity: 0.9;
+  }
+
+  /* ─── FADE ANIM ─── */
+  .fade-in {
+    animation: fadeIn 0.5s ease forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── DECO LINE ─── */
+  .deco { width: 40px; height: 1px; background: var(--matcha); margin: 0 auto 18px; }
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<header>
+  <h1>指圧サロン　あまゆび</h1>
+  <p>からだの不調チェック診断</p>
+</header>
 
-<div id="start" class="card">
-<img src="top.png" alt="あまゆび式・隠れ疲労診断">
-<h2>あまゆび式・隠れ疲労診断</h2>
-<p>自分でも気づかない、身体のSOSを見つけましょう</p>
-<button onclick="start()">診断を始める</button>
-</div>
+<main>
+  <div id="screen-start" class="fade-in">
+    <div class="intro-title">あなたのからだ、<br>どこが疲れていますか？</div>
+    <div class="intro-deco"></div>
+    <p class="intro-sub">
+      日常の何気ない癖や感覚から、<br>
+      からだが発しているサインを読み解きます。<br>
+      全6問、Yes / No でお答えください。
+    </p>
+    <button class="btn btn-primary" onclick="startQuiz()">診断を始める</button>
+  </div>
 
-<div id="quiz" class="hidden card">
-<h2>隠れ疲労チェック</h2>
-<div id="q"></div>
-<button onclick="next()">次へ</button>
-<p id="error"></p>
-</div>
+  <div id="screen-question">
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-label" id="progress-label">1 / 6</div>
+    </div>
+    <div class="q-card" id="q-card">
+      <div class="q-num" id="q-num">Q 1</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-hint" id="q-hint"></div>
+      <button class="btn btn-yes" onclick="answer(true)">はい</button>
+      <button class="btn btn-no"  onclick="answer(false)">いいえ</button>
+    </div>
+  </div>
 
-<div id="result" class="hidden card">
-<h2>診断結果</h2>
-<img id="resultImg" src="" alt="診断結果">
-<h3 id="resultText"></h3>
-<p id="advice"></p>
-<a href="https://lin.ee/egGw0OJ" target="_blank" rel="noopener noreferrer">
-<button>体をゆるめる</button>
-</a>
-<p>※LINEから、ご予約の方には、ご予約特典があります</p>
-<button onclick="restart()">もう一度診断する</button>
-</div>
+  <div id="screen-result">
+    <div class="result-img-wrap">
+      <img id="result-img" src="" alt="診断結果イラスト">
+    </div>
+    <div class="result-badge" id="result-badge">脳疲労タイプ</div>
+    <div class="result-title" id="result-title">思考が止まらないあなたへ</div>
+    <div class="deco"></div>
+    <div class="result-advice" id="result-advice"></div>
+    <a href="https://lin.ee/egGw0OJ" target="_blank" rel="noopener">
+      <button class="btn btn-line">体をゆるめる</button>
+    </a>
+    <p class="line-note">※LINEからご予約の方には特典があります</p>
+    <button class="btn btn-retry" onclick="resetQuiz()">もう一度診断する</button>
+  </div>
+</main>
 
-<div class="footer">
-桐生市相生町2丁目963-63<br>
-電話番号: 0277-40-2611<br>
-指圧サロン あまゆび
-</div>
-
-</div>
+<footer id="footer">
+  桐生市相生町2丁目963-63　／　電話: 0277-40-2611　／　指圧サロン あまゆび
+</footer>
 
 <script>
-const questions = [
-"Q1. PCやスマホを見ていて、気づくと画面に顔が近づいている",
-"Q2. レジ待ちなどで、無意識にどちらかの足に体重をのせている",
-"Q3. 夜、布団に入っても今日の出来事や明日の段取りを考えてしまう",
-"Q4. 階段を下りる時、膝に響く感じや足元の不安を感じる",
-"Q5. 集中している時、無意識に呼吸が止まっていたり浅くなっている",
-"Q6. 夕方になると靴が窮屈に感じたり、靴下のアトがなかなか消えない"
-];
+  // ─── DATA ───────────────────────────────────────────
+  const questions = [
+    { text: "PCやスマホを見ていて、気づくと画面に顔が近づいている", parts: ["kata"], hint: "姿勢・肩まわりのサイン" },
+    { text: "レジ待ちなどで、無意識にどちらかの足に体重をのせている", parts: ["koshi"], hint: "骨盤・腰まわりのサイン" },
+    { text: "夜、布団に入っても今日の出来事や明日の段取りを考えてしまう", parts: ["nou"], hint: "脳・自律神経のサイン" },
+    { text: "階段を下りる時、膝に響く感じや足元の不安を感じる", parts: ["ashi"], hint: "下半身・脚まわりのサイン" },
+    { text: "集中している時、無意識に呼吸が止まっていたり浅くなっている", parts: ["kata", "nou"], hint: "呼吸・神経系のサイン" },
+    { text: "夕方になると靴が窮屈に感じたり、靴下のあとが消えにくい", parts: ["ashi", "koshi"], hint: "むくみ・循環のサイン" },
+  ];
 
-const map = [
-["肩"],
-["腰"],
-["脳"],
-["脚"],
-["肩","脳"],
-["脚","腰"]
-];
+  const results = {
+    nou: {
+      labels: ["軽めの脳疲れ", "積み重なった脳疲れ", "脳が本気で休みを求めています"],
+      titles: ["思考を手放すだけで、からだが変わる", "頭はフル回転、からだはサイン中", "脳が「もう休ませて」と叫んでいます"],
+      advices: [
+        "考えすぎのクセが少しずつからだに影響しはじめています。眠る前にスマホから離れる時間を意識してみましょう。指圧で神経を整えると、夜の質が変わります。",
+        "思考が先走り、からだの緊張が慢性化してきているサインです。頭と首のつながりをほぐすことで、驚くほど「軽さ」を感じられます。",
+        "脳の過活動が全身に波及しています。まず「からだを感じる時間」を取り戻すことが先決。指圧は脳とからだの対話を取り戻す入口です。"
+      ],
+      images: ["nou_1.png","nou_2.png","nou_max.png"]
+    },
+    kata: {
+      labels: ["肩のはじまりの緊張", "肩こりが根を張っています", "肩がもう限界を超えています"],
+      titles: ["肩の力を抜くだけで、息ができる", "肩の緊張が全身に伝わっています", "からだが「降ろしていい」と待っています"],
+      advices: [
+        "画面を見る時間が増え、少しずつ肩周りに緊張が蓄積しています。深呼吸と肩甲骨を動かす習慣が効果的です。",
+        "肩の張りが首や頭部への血流に影響しはじめています。定期的な指圧でリセットすることをおすすめします。",
+        "慢性的な肩の緊張が全身のバランスを崩しているかもしれません。根本からほぐすケアが必要な段階です。"
+      ],
+      images: ["kata_1.png","kata_2.png","kata_max.png"]
+    },
+    koshi: {
+      labels: ["腰への小さな負担", "骨盤の歪みが積み重なっています", "腰がSOSを発しています"],
+      titles: ["重心のクセが、腰に話しかけている", "骨盤のゆがみがからだ全体に響いています", "腰からの「もう休もう」というメッセージ"],
+      advices: [
+        "立ち方・座り方の癖が腰に少しずつ負担をかけています。意識して両足に体重を均等にのせるだけで変わります。",
+        "骨盤の傾きが腰だけでなく、肩や首にも影響している状態です。指圧で骨盤まわりを整えると全身が楽になります。",
+        "腰の疲れが慢性化し、自然回復が難しくなっているサインです。専門的なアプローチで根本から向き合いましょう。"
+      ],
+      images: ["koshi_1.png","koshi_2.png","koshi_max.png"]
+    },
+    ashi: {
+      labels: ["脚の疲れが始まっています", "下半身の循環が滞っています", "脚とからだが限界を知らせています"],
+      titles: ["脚は全身の土台。そのサインを受け取って", "流れが止まると、からだ全体が重くなる", "脚からの声を、もう無視できません"],
+      advices: [
+        "夕方の疲れやむくみが出始めています。寝る前に脚を少し高くして休むだけでも血流が改善します。",
+        "下半身の循環不良が慢性化しつつあります。膝や足首の柔軟性を取り戻すケアが有効です。",
+        "脚の疲れが全身の重さや倦怠感として出ている段階です。からだ全体のめぐりを整える指圧をお試しください。"
+      ],
+      images: ["ashi_1.png","ashi_2.png","ashi_max.png"]
+    }
+  };
 
-const adviceMap = {
-"脳":"頭の中がずっと働き続けていて、休むスイッチが入りにくくなっているかもしれません。首や頭まわりをゆるめて、呼吸が深く入る状態を取り戻していきましょう。",
-"肩":"肩や首まわりに力が入りやすく、姿勢や呼吸の浅さが疲れとして出ている可能性があります。肩だけでなく、背中や胸まわりまでゆるめるケアがおすすめです。",
-"腰":"立ち方や座り方のクセから、腰まわりに負担が集まりやすくなっているかもしれません。腰だけを押すのではなく、骨盤まわりや脚とのつながりを整えることが大切です。",
-"脚":"脚の重だるさやむくみ感など、下半身に疲れがたまりやすい状態かもしれません。足元からゆるめて、巡りが戻るように整えていきましょう。"
-};
+  const priority = ["nou","kata","koshi","ashi"];
 
-const imageMap = {
-"脳":{
-light:"nou_light.png",
-middle:"nou_middle.png",
-max:"nou_max.png"
-},
-"肩":{
-light:"kata_light.png",
-middle:"kata_middle.png",
-max:"kata_max.png"
-},
-"腰":{
-light:"koshi_light.png",
-middle:"koshi_middle.png",
-max:"koshi_max.png"
-},
-"脚":{
-light:"ashi_light.png",
-middle:"ashi_middle.png",
-max:"ashi_max.png"
-}
-};
+  // ─── STATE ──────────────────────────────────────────
+  let current = 0;
+  let scores = { nou:0, kata:0, koshi:0, ashi:0 };
+  let yesCount = 0;
 
-let index = 0;
-let answers = [];
+  // ─── FUNCTIONS ──────────────────────────────────────
+  function show(id) {
+    ["screen-start","screen-question","screen-result"].forEach(s => {
+      document.getElementById(s).style.display = "none";
+    });
+    const el = document.getElementById(id);
+    el.style.display = "block";
+    el.classList.remove("fade-in");
+    void el.offsetWidth;
+    el.classList.add("fade-in");
+  }
 
-function start(){
-document.getElementById("start").classList.add("hidden");
-document.getElementById("quiz").classList.remove("hidden");
-window.scrollTo(0,0);
-show();
-}
+  function startQuiz() {
+    current = 0;
+    scores = { nou:0, kata:0, koshi:0, ashi:0 };
+    yesCount = 0;
+    show("screen-question");
+    renderQuestion();
+  }
 
-function show(){
-document.getElementById("q").innerHTML =
-"<div class='question'>" +
-"<p>" + questions[index] + "</p>" +
-"<div class='choice'>" +
-"<button onclick='answer(true)' type='button'>はい</button>" +
-"<button onclick='answer(false)' type='button'>いいえ</button>" +
-"</div>" +
-"</div>";
+  function renderQuestion() {
+    const q = questions[current];
+    document.getElementById("q-num").textContent = "Q " + (current+1);
+    document.getElementById("q-text").textContent = q.text;
+    document.getElementById("q-hint").textContent = q.hint;
+    document.getElementById("progress-label").textContent = (current+1) + " / " + questions.length;
+    document.getElementById("progress-fill").style.width = ((current / questions.length)*100) + "%";
 
-document.getElementById("error").innerText = "";
-}
+    const card = document.getElementById("q-card");
+    card.classList.remove("fade-in");
+    void card.offsetWidth;
+    card.classList.add("fade-in");
+  }
 
-function answer(val){
-answers[index] = val;
-document.getElementById("error").innerText = "";
-}
+  function answer(isYes) {
+    if (isYes) {
+      yesCount++;
+      questions[current].parts.forEach(p => scores[p]++);
+    }
+    current++;
+    if (current < questions.length) {
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }
 
-function next(){
-if(answers[index] === undefined){
-document.getElementById("error").innerText = "未回答です。はい / いいえを選んでください。";
-return;
-}
+  function showResult() {
+    let level;
+    if (yesCount <= 2)      level = 0;
+    else if (yesCount <= 4) level = 1;
+    else                    level = 2;
 
-index++;
+    let topPart = priority.reduce((best, p) => {
+      if (scores[p] > scores[best]) return p;
+      return best;
+    }, priority[0]);
 
-if(index >= questions.length){
-calc();
-return;
-}
+    const data = results[topPart];
+    const img  = "images/" + data.images[level];
 
-show();
-window.scrollTo(0,0);
-}
+    document.getElementById("result-img").src = img;
+    document.getElementById("result-img").alt = data.labels[level];
+    document.getElementById("result-badge").textContent = data.labels[level];
+    document.getElementById("result-title").textContent = data.titles[level];
+    document.getElementById("result-advice").textContent = data.advices[level];
 
-function getSeverity(count){
-if(count <= 2){
-return {
-text:"ちょっとお疲れ",
-key:"light"
-};
-}else if(count <= 4){
-return {
-text:"かなりお疲れ",
-key:"middle"
-};
-}else{
-return {
-text:"お疲れMAX",
-key:"max"
-};
-}
-}
+    show("screen-result");
+    document.getElementById("footer").style.display = "block";
+    window.scrollTo(0,0);
+  }
 
-function calc(){
-let scores = {脳:0,肩:0,腰:0,脚:0};
-
-answers.forEach((ans, i) => {
-if(ans){
-map[i].forEach(part => {
-scores[part]++;
-});
-}
-});
-
-const priority = ["脳","肩","腰","脚"];
-let maxPart = "脳";
-
-priority.forEach(part => {
-if(scores[part] > scores[maxPart]){
-maxPart = part;
-}
-});
-
-const yesCount = answers.filter(ans => ans).length;
-const severity = getSeverity(yesCount);
-const imageFile = imageMap[maxPart][severity.key];
-
-document.getElementById("quiz").classList.add("hidden");
-document.getElementById("result").classList.remove("hidden");
-
-document.getElementById("resultImg").src = imageFile;
-document.getElementById("resultImg").alt = maxPart + "タイプ " + severity.text;
-document.getElementById("resultText").innerText =
-"あなたの隠れお疲れ部位は【" + maxPart + "】、重度は【" + severity.text + "】でした。";
-document.getElementById("advice").innerText = adviceMap[maxPart];
-
-window.scrollTo(0,0);
-}
-
-function restart(){
-index = 0;
-answers = [];
-document.getElementById("result").classList.add("hidden");
-document.getElementById("quiz").classList.remove("hidden");
-show();
-window.scrollTo(0,0);
-}
+  function resetQuiz() {
+    document.getElementById("footer").style.display = "none";
+    show("screen-start");
+    window.scrollTo(0,0);
+  }
 </script>
 
 </body>
