@@ -179,10 +179,6 @@
     transform: scale(0.97);
   }
 
-  .btn:focus {
-    outline: none;
-  }
-
   .btn-primary {
     background: var(--brown);
     color: var(--beige);
@@ -298,6 +294,10 @@
     text-align: left;
   }
 
+  .line-link {
+    text-decoration: none;
+  }
+
   .line-note {
     font-size: 0.82rem;
     color: #9a8070;
@@ -326,6 +326,7 @@
       opacity: 0;
       transform: translateY(10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -348,7 +349,7 @@
   <p>からだの不調チェック診断</p>
 </header>
 
-<div class="hero-wrap">
+<div class="hero-wrap" id="hero-wrap">
   <img src="images/hero.jpg" alt="指圧サロン あまゆび">
 </div>
 
@@ -392,7 +393,7 @@
     <div class="deco"></div>
     <div class="result-advice" id="result-advice"></div>
 
-    <a href="https://lin.ee/egGw0OJ" target="_blank" rel="noopener">
+    <a class="line-link" href="https://lin.ee/egGw0OJ" target="_blank" rel="noopener">
       <button class="btn btn-line">体をゆるめる</button>
     </a>
 
@@ -408,12 +409,36 @@
 
 <script>
   const questions = [
-    { text: "PCやスマホを見ていて、気づくと画面に顔が近づいている", parts: ["kata"], hint: "姿勢・肩まわりのサイン" },
-    { text: "レジ待ちなどで、無意識にどちらかの足に体重をのせている", parts: ["koshi"], hint: "骨盤・腰まわりのサイン" },
-    { text: "夜、布団に入っても今日の出来事や明日の段取りを考えてしまう", parts: ["nou"], hint: "脳・自律神経のサイン" },
-    { text: "階段を下りる時、膝に響く感じや足元の不安を感じる", parts: ["ashi"], hint: "下半身・脚まわりのサイン" },
-    { text: "集中している時、無意識に呼吸が止まっていたり浅くなっている", parts: ["kata", "nou"], hint: "呼吸・神経系のサイン" },
-    { text: "夕方になると靴が窮屈に感じたり、靴下のあとが消えにくい", parts: ["ashi", "koshi"], hint: "むくみ・循環のサイン" }
+    {
+      text: "PCやスマホを見ていて、気づくと画面に顔が近づいている",
+      parts: ["kata"],
+      hint: "姿勢・肩まわりのサイン"
+    },
+    {
+      text: "レジ待ちなどで、無意識にどちらかの足に体重をのせている",
+      parts: ["koshi"],
+      hint: "骨盤・腰まわりのサイン"
+    },
+    {
+      text: "夜、布団に入っても今日の出来事や明日の段取りを考えてしまう",
+      parts: ["nou"],
+      hint: "脳・自律神経のサイン"
+    },
+    {
+      text: "階段を下りる時、膝に響く感じや足元の不安を感じる",
+      parts: ["ashi"],
+      hint: "下半身・脚まわりのサイン"
+    },
+    {
+      text: "集中している時、無意識に呼吸が止まっていたり浅くなっている",
+      parts: ["kata", "nou"],
+      hint: "呼吸・神経系のサイン"
+    },
+    {
+      text: "夕方になると靴が窮屈に感じたり、靴下のあとが消えにくい",
+      parts: ["ashi", "koshi"],
+      hint: "むくみ・循環のサイン"
+    }
   ];
 
   const results = {
@@ -427,6 +452,7 @@
       ],
       images: ["nou_1.png", "nou_2.png", "nou_max.png"]
     },
+
     kata: {
       labels: ["肩のはじまりの緊張", "肩こりが根を張っています", "肩がもう限界を超えています"],
       titles: ["肩の力を抜くだけで、息ができる", "肩の緊張が全身に伝わっています", "からだが「降ろしていい」と待っています"],
@@ -437,6 +463,7 @@
       ],
       images: ["kata_1.png", "kata_2.png", "kata_max.png"]
     },
+
     koshi: {
       labels: ["腰への小さな負担", "骨盤の歪みが積み重なっています", "腰がSOSを発しています"],
       titles: ["重心のクセが、腰に話しかけている", "骨盤のゆがみがからだ全体に響いています", "腰からの「もう休もう」というメッセージ"],
@@ -447,6 +474,7 @@
       ],
       images: ["koshi_1.png", "koshi_2.png", "koshi_max.png"]
     },
+
     ashi: {
       labels: ["脚の疲れが始まっています", "下半身の循環が滞っています", "脚とからだが限界を知らせています"],
       titles: ["脚は全身の土台。そのサインを受け取って", "流れが止まると、からだ全体が重くなる", "脚からの声を、もう無視できません"],
@@ -462,7 +490,12 @@
   const priority = ["nou", "kata", "koshi", "ashi"];
 
   let current = 0;
-  let scores = { nou: 0, kata: 0, koshi: 0, ashi: 0 };
+  let scores = {
+    nou: 0,
+    kata: 0,
+    koshi: 0,
+    ashi: 0
+  };
   let yesCount = 0;
 
   function show(id) {
@@ -470,23 +503,28 @@
       document.getElementById(screenId).style.display = "none";
     });
 
-    const target = document.getElementById(id);
-    target.style.display = "block";
-    target.classList.remove("fade-in");
-    void target.offsetWidth;
-    target.classList.add("fade-in");
+    const screen = document.getElementById(id);
+    screen.style.display = "block";
+    screen.classList.remove("fade-in");
+    void screen.offsetWidth;
+    screen.classList.add("fade-in");
   }
 
   function startQuiz() {
     current = 0;
-    scores = { nou: 0, kata: 0, koshi: 0, ashi: 0 };
+    scores = {
+      nou: 0,
+      kata: 0,
+      koshi: 0,
+      ashi: 0
+    };
     yesCount = 0;
 
     document.getElementById("footer").style.display = "none";
+    document.getElementById("hero-wrap").style.display = "none";
 
     show("screen-question");
     renderQuestion();
-    window.scrollTo(0, 0);
   }
 
   function renderQuestion() {
@@ -495,6 +533,7 @@
     document.getElementById("q-num").textContent = "Q " + (current + 1);
     document.getElementById("q-text").textContent = q.text;
     document.getElementById("q-hint").textContent = q.hint;
+
     document.getElementById("progress-label").textContent = (current + 1) + " / " + questions.length;
     document.getElementById("progress-fill").style.width = (((current + 1) / questions.length) * 100) + "%";
 
@@ -505,12 +544,9 @@
   }
 
   function answer(isYes) {
-    if (document.activeElement) {
-      document.activeElement.blur();
-    }
-
     if (isYes) {
       yesCount++;
+
       questions[current].parts.forEach(function(part) {
         scores[part]++;
       });
@@ -559,6 +595,8 @@
 
   function resetQuiz() {
     document.getElementById("footer").style.display = "none";
+    document.getElementById("hero-wrap").style.display = "block";
+
     show("screen-start");
     window.scrollTo(0, 0);
   }
