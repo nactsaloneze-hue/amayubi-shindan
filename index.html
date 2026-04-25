@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あまゆび式・隠れ疲労診断</title>
+
+<style>
+body{
+margin:0;
+font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+background:#f5efe3;
+color:#4b3621;
+}
+
+.container{
+max-width:600px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:#fffaf1;
+border-radius:20px;
+padding:20px;
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
+margin-bottom:20px;
+text-align:center;
+}
+
+img{
+width:100%;
+max-width:400px;
+border-radius:20px;
+display:block;
+margin:auto;
+}
+
+#resultImg{
+width:100%;
+max-width:400px;
+aspect-ratio:1/1;
+object-fit:cover;
+display:block;
+margin:20px auto;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+button{
+background:#6f7f45;
+color:white;
+border:none;
+padding:15px;
+border-radius:30px;
+width:100%;
+font-size:16px;
+margin-top:10px;
+cursor:pointer;
+}
+
+button:active{
+transform:scale(0.98);
+}
+
+.hidden{
+display:none;
+}
+
+.question{
+text-align:left;
+margin-bottom:20px;
+}
+
+.choice{
+display:flex;
+gap:10px;
+margin-top:16px;
+}
+
+.choice button{
+width:50%;
+margin-top:0;
+}
+
+.footer{
+text-align:center;
+font-size:12px;
+margin-top:30px;
+line-height:1.7;
+}
+
+#error{
+color:#b94a48;
+font-weight:bold;
+margin-top:12px;
+}
+
+a{
+text-decoration:none;
+}
+
+#resultText{
+line-height:1.8;
+}
+
+#advice{
+line-height:1.8;
+text-align:left;
+background:#f7f1e7;
+padding:16px;
+border-radius:16px;
+margin-top:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="start" class="card">
+<img src="top.png" alt="あまゆび式・隠れ疲労診断">
+<h2>あまゆび式・隠れ疲労診断</h2>
+<p>自分でも気づかない、身体のSOSを見つけましょう</p>
+<button onclick="start()">診断を始める</button>
+</div>
+
+<div id="quiz" class="hidden card">
+<h2>隠れ疲労チェック</h2>
+<div id="q"></div>
+<button onclick="next()">次へ</button>
+<p id="error"></p>
+</div>
+
+<div id="result" class="hidden card">
+<h2>診断結果</h2>
+<img id="resultImg" src="" alt="診断結果">
+<h3 id="resultText"></h3>
+<p id="advice"></p>
+<a href="https://lin.ee/egGw0OJ" target="_blank" rel="noopener noreferrer">
+<button>体をゆるめる</button>
+</a>
+<p>※LINEから、ご予約の方には、ご予約特典があります</p>
+<button onclick="restart()">もう一度診断する</button>
+</div>
+
+<div class="footer">
+桐生市相生町2丁目963-63<br>
+電話番号: 0277-40-2611<br>
+指圧サロン あまゆび
+</div>
+
+</div>
+
+<script>
+const questions = [
+"Q1. PCやスマホを見ていて、気づくと画面に顔が近づいている",
+"Q2. レジ待ちなどで、無意識にどちらかの足に体重をのせている",
+"Q3. 夜、布団に入っても今日の出来事や明日の段取りを考えてしまう",
+"Q4. 階段を下りる時、膝に響く感じや足元の不安を感じる",
+"Q5. 集中している時、無意識に呼吸が止まっていたり浅くなっている",
+"Q6. 夕方になると靴が窮屈に感じたり、靴下のアトがなかなか消えない"
+];
+
+const map = [
+["肩"],
+["腰"],
+["脳"],
+["脚"],
+["肩","脳"],
+["脚","腰"]
+];
+
+const adviceMap = {
+"脳":"頭の中がずっと働き続けていて、休むスイッチが入りにくくなっているかもしれません。首や頭まわりをゆるめて、呼吸が深く入る状態を取り戻していきましょう。",
+"肩":"肩や首まわりに力が入りやすく、姿勢や呼吸の浅さが疲れとして出ている可能性があります。肩だけでなく、背中や胸まわりまでゆるめるケアがおすすめです。",
+"腰":"立ち方や座り方のクセから、腰まわりに負担が集まりやすくなっているかもしれません。腰だけを押すのではなく、骨盤まわりや脚とのつながりを整えることが大切です。",
+"脚":"脚の重だるさやむくみ感など、下半身に疲れがたまりやすい状態かもしれません。足元からゆるめて、巡りが戻るように整えていきましょう。"
+};
+
+const imageMap = {
+"脳":{
+light:"nou_light.png",
+middle:"nou_middle.png",
+max:"nou_max.png"
+},
+"肩":{
+light:"kata_light.png",
+middle:"kata_middle.png",
+max:"kata_max.png"
+},
+"腰":{
+light:"koshi_light.png",
+middle:"koshi_middle.png",
+max:"koshi_max.png"
+},
+"脚":{
+light:"ashi_light.png",
+middle:"ashi_middle.png",
+max:"ashi_max.png"
+}
+};
+
+let index = 0;
+let answers = [];
+
+function start(){
+document.getElementById("start").classList.add("hidden");
+document.getElementById("quiz").classList.remove("hidden");
+window.scrollTo(0,0);
+show();
+}
+
+function show(){
+document.getElementById("q").innerHTML =
+"<div class='question'>" +
+"<p>" + questions[index] + "</p>" +
+"<div class='choice'>" +
+"<button onclick='answer(true)' type='button'>はい</button>" +
+"<button onclick='answer(false)' type='button'>いいえ</button>" +
+"</div>" +
+"</div>";
+
+document.getElementById("error").innerText = "";
+}
+
+function answer(val){
+answers[index] = val;
+document.getElementById("error").innerText = "";
+}
+
+function next(){
+if(answers[index] === undefined){
+document.getElementById("error").innerText = "未回答です。はい / いいえを選んでください。";
+return;
+}
+
+index++;
+
+if(index >= questions.length){
+calc();
+return;
+}
+
+show();
+window.scrollTo(0,0);
+}
+
+function getSeverity(count){
+if(count <= 2){
+return {
+text:"ちょっとお疲れ",
+key:"light"
+};
+}else if(count <= 4){
+return {
+text:"かなりお疲れ",
+key:"middle"
+};
+}else{
+return {
+text:"お疲れMAX",
+key:"max"
+};
+}
+}
+
+function calc(){
+let scores = {脳:0,肩:0,腰:0,脚:0};
+
+answers.forEach((ans, i) => {
+if(ans){
+map[i].forEach(part => {
+scores[part]++;
+});
+}
+});
+
+const priority = ["脳","肩","腰","脚"];
+let maxPart = "脳";
+
+priority.forEach(part => {
+if(scores[part] > scores[maxPart]){
+maxPart = part;
+}
+});
+
+const yesCount = answers.filter(ans => ans).length;
+const severity = getSeverity(yesCount);
+const imageFile = imageMap[maxPart][severity.key];
+
+document.getElementById("quiz").classList.add("hidden");
+document.getElementById("result").classList.remove("hidden");
+
+document.getElementById("resultImg").src = imageFile;
+document.getElementById("resultImg").alt = maxPart + "タイプ " + severity.text;
+document.getElementById("resultText").innerText =
+"あなたの隠れお疲れ部位は【" + maxPart + "】、重度は【" + severity.text + "】でした。";
+document.getElementById("advice").innerText = adviceMap[maxPart];
+
+window.scrollTo(0,0);
+}
+
+function restart(){
+index = 0;
+answers = [];
+document.getElementById("result").classList.add("hidden");
+document.getElementById("quiz").classList.remove("hidden");
+show();
+window.scrollTo(0,0);
+}
+</script>
+
+</body>
+</html>
