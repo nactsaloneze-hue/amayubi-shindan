@@ -572,6 +572,18 @@
   }
 
   function showResult() {
+    if (yesCount === 0) {
+  document.getElementById("result-img").src = "images/genki.png";
+  document.getElementById("result-badge").textContent = "お疲れなしタイプ";
+  document.getElementById("result-title").textContent = "今のあなたはとても良い状態です";
+  document.getElementById("result-advice").textContent =
+    "大きな不調は見られません。この状態をキープすることが大切です。無理せず、今の生活リズムを続けていきましょう。";
+
+  show("screen-result");
+  document.getElementById("footer").style.display = "block";
+  window.scrollTo(0, 0);
+  return;
+}
     let level;
 
     if (yesCount <= 2) {
